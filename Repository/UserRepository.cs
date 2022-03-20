@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Minder.Interface;
 using Minder.Model;
 
@@ -25,7 +26,7 @@ namespace Minder.Repository
 
         public User FindById(int id)
         {
-            User userByID = (from x in _context.Users
+            var userByID = (from x in _context.Users.Include(e=>e.DiscoverySettings)
                            where x.Id == id
                            select x).FirstOrDefault();
             return userByID;

@@ -8,6 +8,7 @@ namespace Minder.Model
         public DbSet<Account> Accounts { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<DiscoverySetting> DiscoverySettings { get; set; }
+        public DbSet<Match> Matches { get; set; }
         //public DbSet<LifeStyle> LifeStyles { get; set; }
         //public DbSet<Passion> Passions { get; set; }
 
@@ -43,6 +44,7 @@ namespace Minder.Model
                     entity.Property(e => e.JobTitle);
                     entity.Property(e => e.Company);
                     entity.Property(e => e.LivingIn);
+                    entity.HasOne(e=>e.DiscoverySettings).WithOne(e=>e.User).HasForeignKey<DiscoverySetting>(e=>e.UserId);
                 });
 
             modelBuilder.Entity<DiscoverySetting>(entity =>
@@ -55,6 +57,13 @@ namespace Minder.Model
                     entity.HasOne(e=>e.User).WithOne(e=>e.DiscoverySettings).HasForeignKey<DiscoverySetting>(e=>e.UserId);
                 });
 
+            modelBuilder.Entity<Match>(entity =>
+                {
+                    entity.HasKey(e => e.Id);
+                    entity.Property(e => e.MatchedUserId).IsRequired();
+                    entity.Property(e => e.IsMatch).IsRequired();
+                });
+
             modelBuilder.Entity<Account>().HasData(
                 new Account
                 {
@@ -62,7 +71,8 @@ namespace Minder.Model
                     Email = "ugurunsal@gmail.com",
                     Password = "123456",
                     IsBlocked = false,
-                    IsVisible = true
+                    IsVisible = true,
+                    UserId = 1
                 },
                 new Account
                 {
@@ -70,7 +80,8 @@ namespace Minder.Model
                     Email = "onurunsal@gmail.com",
                     Password = "123456",
                     IsBlocked = false,
-                    IsVisible = true
+                    IsVisible = true,
+                    UserId = 2
                 },
                 new Account
                 {
@@ -78,7 +89,8 @@ namespace Minder.Model
                     Email = "utkudemir@gmail.com",
                     Password = "123456",
                     IsBlocked = false,
-                    IsVisible = true
+                    IsVisible = true,
+                    UserId = 3
                 },
                 new Account
                 {
@@ -86,7 +98,8 @@ namespace Minder.Model
                     Email = "ersenuncu@gmail.com",
                     Password = "123456",
                     IsBlocked = false,
-                    IsVisible = true
+                    IsVisible = true,
+                    UserId = 4
                 },
                 new Account
                 {
@@ -94,7 +107,8 @@ namespace Minder.Model
                     Email = "ozgurozturk@gmail.com",
                     Password = "123456",
                     IsBlocked = false,
-                    IsVisible = true
+                    IsVisible = true,
+                    UserId = 5
                 },
                 new Account
                 {
@@ -102,7 +116,8 @@ namespace Minder.Model
                     Email = "idilnihan@gmail.com",
                     Password = "654321",
                     IsBlocked = false,
-                    IsVisible = true
+                    IsVisible = true,
+                    UserId = 6
                 },
                 new Account
                 {
@@ -110,7 +125,8 @@ namespace Minder.Model
                     Email = "setenay@gmail.com",
                     Password = "654321",
                     IsBlocked = false,
-                    IsVisible = true
+                    IsVisible = true,
+                    UserId = 7
                 },
                 new Account
                 {
@@ -118,7 +134,8 @@ namespace Minder.Model
                     Email = "goksenbakay@gmail.com",
                     Password = "654321",
                     IsBlocked = false,
-                    IsVisible = true
+                    IsVisible = true,
+                    UserId = 8
                 },
                 new Account
                 {
@@ -126,7 +143,8 @@ namespace Minder.Model
                     Email = "seymadeveci@gmail.com",
                     Password = "654321",
                     IsBlocked = false,
-                    IsVisible = true
+                    IsVisible = true,
+                    UserId = 9
                 },
                 new Account
                 {
@@ -134,7 +152,8 @@ namespace Minder.Model
                     Email = "alarasakarya@gmail.com",
                     Password = "654321",
                     IsBlocked = false,
-                    IsVisible = true
+                    IsVisible = true,
+                    UserId = 10
                 });
 
             modelBuilder.Entity<User>().HasData(
@@ -142,7 +161,7 @@ namespace Minder.Model
                 {
                     Id = 1,
                     AccountId = 1,
-                    DiscoverySettingId=1,
+                    //DiscoverySettingId=1,
                     FirstName = "Ugur",
                     LastName = "Unsal",
                     Gender = Gender.Man,
@@ -154,7 +173,7 @@ namespace Minder.Model
                 {
                     Id = 2,
                     AccountId = 2,
-                    DiscoverySettingId=2,
+                    //DiscoverySettingId=2,
                     FirstName = "Onur",
                     LastName = "Unsal",
                     Gender = Gender.Man,
@@ -166,7 +185,7 @@ namespace Minder.Model
                 {
                     Id = 3,
                     AccountId = 3,
-                    DiscoverySettingId=3,
+                    //DiscoverySettingId=3,
                     FirstName = "Utku",
                     LastName = "Demir",
                     Gender = Gender.Man,
@@ -178,7 +197,7 @@ namespace Minder.Model
                 {
                     Id = 4,
                     AccountId = 4,
-                    DiscoverySettingId=4,
+                    //DiscoverySettingId=4,
                     FirstName = "Ersen",
                     LastName = "Uncu",
                     Gender = Gender.Man,
@@ -190,7 +209,7 @@ namespace Minder.Model
                 {
                     Id = 5,
                     AccountId = 5,
-                    DiscoverySettingId=5,
+                    //DiscoverySettingId=5,
                     FirstName = "Ozgur",
                     LastName = "Ozturk",
                     Gender = Gender.Man,
@@ -202,19 +221,19 @@ namespace Minder.Model
                 {
                     Id = 6,
                     AccountId = 6,
-                    DiscoverySettingId=6,
+                    //DiscoverySettingId=6,
                     FirstName = "İdil",
                     LastName = "Nihan",
                     Gender = Gender.Women,
                     BirthDate = new DateTime(2003,02,04),
                     Latitude = 41.06150009946095,
-                    Longtitude = 228.999743808045224
+                    Longtitude = 28.999743808045224
                 },
                 new User
                 {
                     Id = 7,
                     AccountId = 7,
-                    DiscoverySettingId=7,
+                    //DiscoverySettingId=7,
                     FirstName = "Setenay",
                     LastName = "Eyigun",
                     Gender = Gender.Women,
@@ -226,7 +245,7 @@ namespace Minder.Model
                 {
                     Id = 8,
                     AccountId = 8,
-                    DiscoverySettingId=8,
+                    //DiscoverySettingId=8,
                     FirstName = "Goksen",
                     LastName = "Bakay",
                     Gender = Gender.Women,
@@ -238,7 +257,7 @@ namespace Minder.Model
                 {
                     Id = 9,
                     AccountId = 9,
-                    DiscoverySettingId=9,
+                    //DiscoverySettingId=9,
                     FirstName = "Seyma",
                     LastName = "Deveci",
                     Gender = Gender.Women,
@@ -250,7 +269,7 @@ namespace Minder.Model
                 {
                     Id = 10,
                     AccountId = 10,
-                    DiscoverySettingId=10,
+                    //DiscoverySettingId=10,
                     FirstName = "Alara",
                     LastName = "Sakarya",
                     Gender = Gender.Women,

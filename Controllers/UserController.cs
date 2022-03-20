@@ -7,7 +7,8 @@ using Minder.Model;
 [Route("[controller]")]
 public class UserController : ControllerBase
 {
-    private IUserService _userService;
+    private readonly IUserService _userService;
+    
 
     public UserController(IUserService userService)
     {

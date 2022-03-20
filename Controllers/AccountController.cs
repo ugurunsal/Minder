@@ -7,7 +7,7 @@ using Minder.Model;
 [Route("[controller]")]
 public class AccountController : ControllerBase
 {
-    private IAccountService _accountService;
+    private readonly IAccountService _accountService;
 
     public AccountController(IAccountService accountService)
     {

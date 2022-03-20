@@ -13,29 +13,31 @@ namespace Minder.Repository
         }
         public void Create(Passion passion)
         {
-            _context.Passions.Add(passion);
+            //_context.Passions.Add(passion);
             _context.SaveChanges();
         }
 
         public void Delete(Passion passion)
         {
-            _context.Passions.Remove(passion);
+            //_context.Passions.Remove(passion);
             _context.SaveChanges();
         }
 
         public List<Passion> GetAll()
         {
-            return _context.Passions.ToList();
+            //return _context.Passions.ToList();
+            return new List<Passion>();
         }
 
         public Passion GetByName(string name)
         {
-            return _context.Passions.FirstOrDefault(p=>p.Name==name);
+            //return _context.Passions.FirstOrDefault(p=>p.Name==name);
+            return new Passion();
         }
 
         public Passion Update(Passion passion)
         {
-            _context.Passions.Update(passion);
+            //_context.Passions.Update(passion);
             _context.SaveChanges();
             return passion;
         }

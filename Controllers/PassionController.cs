@@ -7,7 +7,7 @@ using Minder.Model;
 [Route("[controller]")]
 public class PassionController : ControllerBase
 {
-    private IPassionService _passionService;
+    private readonly IPassionService _passionService;
 
     public PassionController(IPassionService passionService)
     {

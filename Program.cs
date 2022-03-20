@@ -26,6 +26,8 @@ builder.Services.AddScoped<ILifeStyleRepository,LifeStyleRepository>();
 builder.Services.AddScoped<ILifeStyleService,LifeStyleService>();
 builder.Services.AddScoped<IPassionRepository,PassionRepository>();
 builder.Services.AddScoped<IPassionService,PassionService>();
+builder.Services.AddScoped<IDiscoveryService,DiscoveryService>();
+builder.Services.AddScoped<IMatchRepository,MatchRepository>();
 
 var app = builder.Build();
 

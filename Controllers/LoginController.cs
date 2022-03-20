@@ -6,7 +6,7 @@ using Minder.Interface;
 [Route("[controller]")]
 public class LoginController : ControllerBase
 {
-    private ILoginService _loginService;
+    private readonly ILoginService _loginService;
 
     public LoginController(ILoginService loginService)
     {

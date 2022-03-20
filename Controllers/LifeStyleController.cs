@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using Minder.DTO;
 using Minder.Interface;
 using Minder.Model;
 
@@ -7,7 +6,7 @@ using Minder.Model;
 [Route("[controller]")]
 public class LifeStyleController : ControllerBase
 {
-    private ILifeStyleService _lifeStyleService;
+    private readonly ILifeStyleService _lifeStyleService;
 
     public LifeStyleController(ILifeStyleService lifeStyleService)
     {

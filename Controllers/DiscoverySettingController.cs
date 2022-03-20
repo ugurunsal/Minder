@@ -7,7 +7,7 @@ using Minder.Model;
 [Route("[controller]")]
 public class DiscoverySettingController : ControllerBase
 {
-    private IDiscoverySettingService _discoverySettingService;
+    private readonly IDiscoverySettingService _discoverySettingService;
 
     public DiscoverySettingController(IDiscoverySettingService discoverySettingService)
     {
