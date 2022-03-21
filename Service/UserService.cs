@@ -1,3 +1,5 @@
+using Minder.DTO;
+using Minder.Enum;
 using Minder.Interface;
 using Minder.Model;
 
@@ -12,39 +14,82 @@ namespace Minder.Service
             _userRepository = userRepository;
         }
 
-        public void Create(User user)
+        public BaseResponse<User> Create(User user)
         {
+            BaseResponse<User> response = new BaseResponse<User>();
             var createdUser = _userRepository.FindById(user.Id);
-            if(createdUser is not null)
-                throw new Exception("Böyle bir kullanıcı zaten var");
+            if (createdUser is not null)
+            {
+                response.ResponseStatusCodes = ResponseStatusCodes.AccountFound;
+                return response;
+            }
             _userRepository.Create(user);
+            response.ResponseStatusCodes = ResponseStatusCodes.Success;
+            response.Data = user;
+            return response;
         }
 
-        public void Delete(User user)
+        public BaseResponse<string> Delete(User user)
         {
+            BaseResponse<string> response = new BaseResponse<string>();
             var deletedUser = _userRepository.FindById(user.Id);
-            if(deletedUser is null)
-                throw new Exception("Kullanıcı bulunamadı.");
+            if (deletedUser is null)
+            {
+                response.ResponseStatusCodes = ResponseStatusCodes.AccountNotFound;
+                return response;
+            }
             _userRepository.Delete(deletedUser);
+            response.ResponseStatusCodes = ResponseStatusCodes.Success;
+            return response;
         }
 
-        public User FindById(int id)
+        public BaseResponse<User> FindById(int id)
         {
-            return _userRepository.FindById(id);
+            BaseResponse<User> response = new BaseResponse<User>();
+            try
+            {
+                response.Data = _userRepository.FindById(id);
+                response.ResponseStatusCodes = ResponseStatusCodes.Success;
+                return response;
+            }
+            catch (Exception e)
+            {
+                response.Data = null;
+                response.ResponseStatusCodes = ResponseStatusCodes.AccountNotFound;
+                return response;
+            }
         }
 
-        public List<User> GetAll()
+        public BaseResponse<List<User>> GetAll()
         {
-            return _userRepository.GetAll();
+            BaseResponse<List<User>> response = new BaseResponse<List<User>>();
+            try
+            {
+                response.Data = _userRepository.GetAll();
+                response.ResponseStatusCodes = ResponseStatusCodes.Success;
+                return response;
+            }
+            catch (Exception e)
+            {
+                response.Data = null;
+                response.ResponseStatusCodes = ResponseStatusCodes.AccountNotFound;
+                return response;
+            }
         }
 
-        public User Update(User user)
+        public BaseResponse<User> Update(User user)
         {
+            BaseResponse<User> response = new BaseResponse<User>();
             var updatedAccount = _userRepository.FindById(user.Id);
-            if(updatedAccount is null)
-                throw new Exception("Kullanıcı bulunamadı.");
-            _userRepository.Update(user);
-            return user;
+            if (updatedAccount is null)
+            {
+                response.ResponseStatusCodes = ResponseStatusCodes.AccountNotFound;
+                return response;
+            }
+            _userRepository.Update(updatedAccount);
+            response.Data = user;
+            response.ResponseStatusCodes = ResponseStatusCodes.Success;
+            return response;
         }
     }
 }

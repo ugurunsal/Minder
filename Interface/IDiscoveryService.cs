@@ -4,7 +4,7 @@ namespace Minder.Interface
 {
     public interface IDiscoveryService
     {
-        List<DiscoveryUserDTO> Discovery(int userId);
-        DiscoveryUserDTO Like(int userId, int likedUserId);
+        BaseResponse<List<DiscoveryUserDTO>> Discovery(int userId);
+        BaseResponse<DiscoveryUserDTO> Like(int userId, int likedUserId);
     }
 }

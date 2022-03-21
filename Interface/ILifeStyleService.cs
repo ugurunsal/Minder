@@ -1,12 +1,13 @@
+using Minder.DTO;
 using Minder.Model;
 
 namespace Minder.Interface
 {
     public interface ILifeStyleService
     {
-        void Create(LifeStyle lifeStyle);
-        LifeStyle Update(LifeStyle lifeStyle);
-        void Delete(LifeStyle lifeStyle);
-        LifeStyle FindByUserId(int userId);
+        BaseResponse<LifeStyle> Create(LifeStyle lifeStyle);
+        BaseResponse<LifeStyle> Update(LifeStyle lifeStyle);
+        BaseResponse<string> Delete(LifeStyle lifeStyle);
+        BaseResponse<LifeStyle> FindByUserId(int userId);
     }
 }

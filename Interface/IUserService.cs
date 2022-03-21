@@ -1,13 +1,14 @@
+using Minder.DTO;
 using Minder.Model;
 
 namespace Minder.Interface
 {
     public interface IUserService
     {
-        void Create(User user);
-        User Update(User user);
-        void Delete(User user);
-        List<User> GetAll();
-        User FindById(int id);
+        BaseResponse<User> Create(User user);
+        BaseResponse<User> Update(User user);
+        BaseResponse<string> Delete(User user);
+        BaseResponse<List<User>> GetAll();
+        BaseResponse<User> FindById(int id);
     }
 }

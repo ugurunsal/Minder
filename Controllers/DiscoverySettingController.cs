@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Minder.DTO;
+using Minder.Helper;
 using Minder.Interface;
 using Minder.Model;
 
@@ -8,34 +9,35 @@ using Minder.Model;
 public class DiscoverySettingController : ControllerBase
 {
     private readonly IDiscoverySettingService _discoverySettingService;
+    private readonly ResponseGeneratorHelper ResponseGeneratorHelper;
 
-    public DiscoverySettingController(IDiscoverySettingService discoverySettingService)
+    public DiscoverySettingController(IDiscoverySettingService discoverySettingService, ResponseGeneratorHelper _ResponseGeneratorHelper)
     {
         _discoverySettingService = discoverySettingService;
+        ResponseGeneratorHelper = _ResponseGeneratorHelper;
     }
 
     [HttpPost("create")]
-    public void Create(DiscoverySetting discoverySetting)
+    public ActionResult<BaseResponse<DiscoverySetting>> Create(DiscoverySetting discoverySetting)
     {
-        _discoverySettingService.Create(discoverySetting);
+        return ResponseGeneratorHelper.ResponseGenerator(_discoverySettingService.Create(discoverySetting));
     }
 
     [HttpPost("update")]
-    public DiscoverySetting Update(DiscoverySetting discoverySetting)
+    public ActionResult<BaseResponse<DiscoverySetting>> Update(DiscoverySetting discoverySetting)
     {
-        _discoverySettingService.Update(discoverySetting);
-        return discoverySetting;
+        return ResponseGeneratorHelper.ResponseGenerator(_discoverySettingService.Update(discoverySetting));
     }
 
     [HttpPost("delete")]
-    public void Delete(DiscoverySetting discoverySetting)
+    public ActionResult<BaseResponse<string>> Delete(DiscoverySetting discoverySetting)
     {
-        _discoverySettingService.Delete(discoverySetting);
+        return ResponseGeneratorHelper.ResponseGenerator(_discoverySettingService.Delete(discoverySetting));
     }
 
     [HttpGet]
-    public DiscoverySetting FindByUserId(int userId)
+    public ActionResult<BaseResponse<DiscoverySetting>> FindByUserId(int userId)
     {
-        return _discoverySettingService.FindByUserId(userId);
+        return ResponseGeneratorHelper.ResponseGenerator(_discoverySettingService.FindByUserId(userId));
     }
 }

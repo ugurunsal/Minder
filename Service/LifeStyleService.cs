@@ -1,3 +1,5 @@
+using Minder.DTO;
+using Minder.Enum;
 using Minder.Interface;
 using Minder.Model;
 
@@ -14,34 +16,65 @@ namespace Minder.Service
             _userRepository = userRepository;
         }
 
-        public void Create(LifeStyle lifeStyle)
+        public BaseResponse<LifeStyle> Create(LifeStyle lifeStyle)
         {
+            BaseResponse<LifeStyle> response = new BaseResponse<LifeStyle>();
             var user = _userRepository.FindById(lifeStyle.UserId);
-            if(user is null)
-                throw new Exception("Kullanıcı Bulunamadı");
+            if (user is not null)
+            {
+                response.ResponseStatusCodes = ResponseStatusCodes.AccountFound;
+                return response;
+            }
             _lifeStyleRepository.Create(lifeStyle);
+            response.ResponseStatusCodes = ResponseStatusCodes.Success;
+            response.Data = lifeStyle;
+            return response;
         }
 
-        public void Delete(LifeStyle lifeStyle)
+        public BaseResponse<string> Delete(LifeStyle lifeStyle)
         {
+            BaseResponse<string> response = new BaseResponse<string>();
             var user = _userRepository.FindById(lifeStyle.UserId);
-            if(user is null)
-                throw new Exception("Kullanıcı Bulunamadı");
+            if (user is null)
+            {
+                response.ResponseStatusCodes = ResponseStatusCodes.AccountNotFound;
+                return response;
+            }
             _lifeStyleRepository.Delete(lifeStyle);
+            response.ResponseStatusCodes = ResponseStatusCodes.Success;
+            return response;
         }
 
-        public LifeStyle FindByUserId(int userId)
+        public BaseResponse<LifeStyle> FindByUserId(int userId)
         {
-            return _lifeStyleRepository.FindByUserId(userId);
+            BaseResponse<LifeStyle> response = new BaseResponse<LifeStyle>();
+            try
+            {
+                response.Data = _lifeStyleRepository.FindByUserId(userId);
+                response.ResponseStatusCodes = ResponseStatusCodes.Success;
+                return response;
+            }
+            catch (Exception e)
+            {
+                response.Data = null;
+                response.ResponseStatusCodes = ResponseStatusCodes.AccountNotFound;
+                return response;
+            }
         }
 
-        public LifeStyle Update(LifeStyle lifeStyle)
+        public BaseResponse<LifeStyle> Update(LifeStyle lifeStyle)
         {
+            BaseResponse<LifeStyle> response = new BaseResponse<LifeStyle>();
             var user = _userRepository.FindById(lifeStyle.UserId);
-            if(user is null)
-                throw new Exception("Kullanıcı Bulunamadı");
+            if (user is null)
+            {
+                response.ResponseStatusCodes = ResponseStatusCodes.AccountNotFound;
+                return response;
+            }
             _lifeStyleRepository.Update(lifeStyle);
-            return lifeStyle;
+            response.Data = lifeStyle;
+            response.ResponseStatusCodes = ResponseStatusCodes.Success;
+            return response;
         }
     }
 }

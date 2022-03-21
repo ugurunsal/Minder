@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Minder.DTO;
+using Minder.Helper;
 using Minder.Interface;
 using Minder.Model;
 
@@ -8,40 +9,41 @@ using Minder.Model;
 public class UserController : ControllerBase
 {
     private readonly IUserService _userService;
-    
+    private readonly ResponseGeneratorHelper ResponseGeneratorHelper;
 
-    public UserController(IUserService userService)
+    public UserController(IUserService userService, ResponseGeneratorHelper _ResponseGeneratorHelper)
     {
         _userService = userService;
+        ResponseGeneratorHelper = _ResponseGeneratorHelper;
     }
 
     [HttpPost("create")]
-    public void Create(User user)
+    public ActionResult<BaseResponse<User>> Create(User user)
     {
-        _userService.Create(user);
+        return ResponseGeneratorHelper.ResponseGenerator(_userService.Create(user));
     }
 
     [HttpPost("update")]
-    public User Update(User user)
+    public ActionResult<BaseResponse<User>> Update(User user)
     {
-        return _userService.Update(user);
+        return ResponseGeneratorHelper.ResponseGenerator(_userService.Update(user));
     }
 
     [HttpPost("delete")]
-    public void Delete(User user)
+    public ActionResult<BaseResponse<string>> Delete(User user)
     {
-        _userService.Delete(user);
+        return ResponseGeneratorHelper.ResponseGenerator(_userService.Delete(user));
     }
 
     [HttpGet("getall")]
-    public List<User> GetAll()
+    public ActionResult<BaseResponse<List<User>>> GetAll()
     {
-        return _userService.GetAll();
+        return ResponseGeneratorHelper.ResponseGenerator(_userService.GetAll());
     }
 
     [HttpGet]
-    public User FindById(int id)
+    public ActionResult<BaseResponse<User>> FindById(int id)
     {
-        return _userService.FindById(id);
+        return ResponseGeneratorHelper.ResponseGenerator(_userService.FindById(id));
     }
 }

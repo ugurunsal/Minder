@@ -5,15 +5,15 @@ namespace Minder.Interface
 {
     public interface IAccountService
     {
-        void Create(Account account);
-        Account Update(Account account);
-        Account UpdateEmail(string oldEmail, string newEmail);
-        Account UpdatePasswordByEmail(string email, string newPassword);
-        Account ChangeIsBlockedByEmail(string email);
-        Account ChangeVisibilityByEmail(string email);
-        void DeleteByEmail(string email);
-        List<Account> GetAll();
-        Account GetByEmail(string email);
-        Account GetById(int id);
+        BaseResponse<Account> Create(Account account);
+        BaseResponse<Account> Update(Account account);
+        BaseResponse<Account> UpdateEmail(string oldEmail, string newEmail);
+        BaseResponse<Account> UpdatePasswordByEmail(string email, string newPassword);
+        BaseResponse<Account> ChangeIsBlockedByEmail(string email);
+        BaseResponse<Account> ChangeVisibilityByEmail(string email);
+        BaseResponse<string> DeleteByEmail(string email);
+        BaseResponse<List<Account>> GetAll();
+        BaseResponse<Account> GetByEmail(string email);
+        BaseResponse<Account> GetById(int id);
     }
 }

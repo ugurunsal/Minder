@@ -1,3 +1,5 @@
+using Minder.DTO;
+using Minder.Enum;
 using Minder.Interface;
 using Minder.Model;
 
@@ -14,34 +16,65 @@ namespace Minder.Service
             _userRepository = userRepository;
         }
 
-        public void Create(DiscoverySetting discoverySetting)
+        public BaseResponse<DiscoverySetting> Create(DiscoverySetting discoverySetting)
         {
+            BaseResponse<DiscoverySetting> response = new BaseResponse<DiscoverySetting>();
             var user = _userRepository.FindById(discoverySetting.UserId);
-            if(user is null)
-                throw new Exception("Kullanıcı Bulunamadı");
+            if (user is not null)
+            {
+                response.ResponseStatusCodes = ResponseStatusCodes.AccountNotFound;
+                return response;
+            }
             _discoverySettingRepository.Create(discoverySetting);
+            response.ResponseStatusCodes = ResponseStatusCodes.Success;
+            response.Data = discoverySetting;
+            return response;
         }
 
-        public void Delete(DiscoverySetting discoverySetting)
+        public BaseResponse<string> Delete(DiscoverySetting discoverySetting)
         {
+            BaseResponse<string> response = new BaseResponse<string>();
             var user = _userRepository.FindById(discoverySetting.UserId);
-            if(user is null)
-                throw new Exception("Kullanıcı Bulunamadı");
+            if (user is null)
+            {
+                response.ResponseStatusCodes = ResponseStatusCodes.AccountNotFound;
+                return response;
+            }
             _discoverySettingRepository.Delete(discoverySetting);
+            response.ResponseStatusCodes = ResponseStatusCodes.Success;
+            return response;
         }
 
-        public DiscoverySetting FindByUserId(int userId)
+        public BaseResponse<DiscoverySetting> FindByUserId(int userId)
         {
-            return _discoverySettingRepository.FindByUserId(userId);
+            BaseResponse<DiscoverySetting> response = new BaseResponse<DiscoverySetting>();
+            try
+            {
+                response.Data = _discoverySettingRepository.FindByUserId(userId);
+                response.ResponseStatusCodes = ResponseStatusCodes.Success;
+                return response;
+            }
+            catch (Exception e)
+            {
+                response.Data = null;
+                response.ResponseStatusCodes = ResponseStatusCodes.DataNotFound;
+                return response;
+            }
         }
 
-        public DiscoverySetting Update(DiscoverySetting discoverySetting)
+        public BaseResponse<DiscoverySetting> Update(DiscoverySetting discoverySetting)
         {
+            BaseResponse<DiscoverySetting> response = new BaseResponse<DiscoverySetting>();
             var user = _userRepository.FindById(discoverySetting.UserId);
-            if(user is null)
-                throw new Exception("Kullanıcı Bulunamadı");
+            if (user is null)
+            {
+                response.ResponseStatusCodes = ResponseStatusCodes.AccountNotFound;
+                return response;
+            }
             _discoverySettingRepository.Update(discoverySetting);
-            return discoverySetting;
+            response.ResponseStatusCodes = ResponseStatusCodes.Success;
+            response.Data = discoverySetting;
+            return response;
         }
     }
 }

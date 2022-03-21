@@ -1,4 +1,5 @@
 using Minder.DTO;
+using Minder.Enum;
 using Minder.Interface;
 using Minder.Model;
 
@@ -16,10 +17,16 @@ namespace Minder.Service
             _matchRepository = matchRepository;
         }
 
-        public DiscoveryUserDTO Like(int userId, int likedUserId)
+        public BaseResponse<DiscoveryUserDTO> Like(int userId, int likedUserId)
         {
+            BaseResponse<DiscoveryUserDTO> response = new BaseResponse<DiscoveryUserDTO>();
             var likedUser = _userRepository.FindById(likedUserId);
             var activeUser = _userRepository.FindById(userId);
+            if(activeUser is null || likedUser is null)
+            {
+                response.ResponseStatusCodes = ResponseStatusCodes.AccountNotFound;
+                return response;
+            }
             double distance = DistanceInKM(activeUser.Latitude, activeUser.Longtitude, likedUser.Latitude, likedUser.Longtitude);
             var match = _matchRepository.GetMatchByIdies(likedUserId,userId);
             if (match is not null)
@@ -35,14 +42,17 @@ namespace Minder.Service
                 match.IsMatch = true;
                 match.MatchDate = matchDate;
                 _matchRepository.Update(match);
-                return new DiscoveryUserDTO
+                response.Data = new DiscoveryUserDTO
                 {
+                    UserId = likedUserId,
                     Result = "MATCH!!!",
                     FullName = $"{likedUser.FirstName} {likedUser.LastName}",
                     Gender = likedUser.Gender.ToString(),
                     Age = (DateTime.Today.Year - likedUser.BirthDate.Year),
                     Distance = $"{distance} KM"
                 };
+                response.ResponseStatusCodes = ResponseStatusCodes.Success;
+                return response;
             }
             _matchRepository.Add(
                 new Match
@@ -52,20 +62,29 @@ namespace Minder.Service
                     IsMatch = false,
                     IsDislike = false
                 });
-                return new DiscoveryUserDTO
+                response.Data = new DiscoveryUserDTO
                 {
+                    UserId = likedUserId,
                     Result = "Not Matched",
                     FullName = $"{likedUser.FirstName} {likedUser.LastName}",
                     Gender = likedUser.Gender.ToString(),
                     Age = (DateTime.Today.Year - likedUser.BirthDate.Year),
                     Distance = $"{distance} KM"
                 };
+                response.ResponseStatusCodes = ResponseStatusCodes.Success;
+                return response;
         }
 
-        public List<DiscoveryUserDTO> Discovery(int userId)
+        public BaseResponse<List<DiscoveryUserDTO>> Discovery(int userId)
         {
+            BaseResponse<List<DiscoveryUserDTO>> response = new BaseResponse<List<DiscoveryUserDTO>>();
             List<User> users = _userRepository.GetAll();
             User activeUser = _userRepository.FindById(userId);
+            if(activeUser is null)
+            {
+                response.ResponseStatusCodes = ResponseStatusCodes.AccountNotFound;
+                return response;
+            }
             List<DiscoveryUserDTO> discoveryUserList = new List<DiscoveryUserDTO>();
             foreach (var user in users)
             {
@@ -78,6 +97,7 @@ namespace Minder.Service
                 {
                     discoveryUserList.Add(new DiscoveryUserDTO
                     {
+                        UserId = user.Id,
                         Result = "Not Matched",
                         FullName = $"{user.FirstName} {user.LastName}",
                         Gender = user.Gender.ToString(),
@@ -86,8 +106,9 @@ namespace Minder.Service
                     });
                 }
             }
-
-            return discoveryUserList;
+            response.Data = discoveryUserList;
+            response.ResponseStatusCodes = ResponseStatusCodes.Success;
+            return response;
         }
         private int Age(DateTime birthDate)
         {

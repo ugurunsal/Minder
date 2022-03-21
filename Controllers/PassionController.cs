@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Minder.DTO;
+using Minder.Helper;
 using Minder.Interface;
 using Minder.Model;
 
@@ -8,39 +9,41 @@ using Minder.Model;
 public class PassionController : ControllerBase
 {
     private readonly IPassionService _passionService;
+    private readonly ResponseGeneratorHelper ResponseGeneratorHelper;
 
-    public PassionController(IPassionService passionService)
+    public PassionController(IPassionService passionService, ResponseGeneratorHelper _ResponseGeneratorHelper)
     {
         _passionService = passionService;
+        ResponseGeneratorHelper = _ResponseGeneratorHelper;
     }
 
     [HttpPost("create")]
-    public void Create(Passion passion)
+    public ActionResult<BaseResponse<Passion>> Create(Passion passion)
     {
-        _passionService.Create(passion);
+        return ResponseGeneratorHelper.ResponseGenerator(_passionService.Create(passion));
     }
 
     [HttpPost("update")]
-    public Passion Update(Passion passion)
+    public ActionResult<BaseResponse<Passion>> Update(Passion passion)
     {
-        return _passionService.Update(passion);
+        return ResponseGeneratorHelper.ResponseGenerator(_passionService.Update(passion));
     }
 
     [HttpPost("delete")]
-    public void Delete(Passion passion)
+    public ActionResult<BaseResponse<string>> Delete(Passion passion)
     {
-        _passionService.Delete(passion);
+        return ResponseGeneratorHelper.ResponseGenerator(_passionService.Delete(passion));
     }
 
     [HttpGet("getall")]
-    public List<Passion> GetAll()
+    public ActionResult<BaseResponse<List<Passion>>> GetAll()
     {
-        return _passionService.GetAll();
+        return ResponseGeneratorHelper.ResponseGenerator(_passionService.GetAll());
     }
     
     [HttpGet]
-    public Passion GetByName(string name)
+    public ActionResult<BaseResponse<Passion>> GetByName(string name)
     {
-        return _passionService.GetByName(name);
+        return ResponseGeneratorHelper.ResponseGenerator(_passionService.GetByName(name));
     }
 }

@@ -21,11 +21,4 @@ public class LoginController : ControllerBase
             return BadRequest(new { message = "Username or password is incorrect" });
         return Ok(response);
     }
-
-    [Authorize]
-    [HttpGet]
-    public IActionResult GetAll()
-    {
-        return Ok("users");
-    }
 }

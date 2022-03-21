@@ -1,3 +1,5 @@
+using Minder.DTO;
+using Minder.Enum;
 using Minder.Interface;
 using Minder.Model;
 
@@ -12,84 +14,163 @@ namespace Minder.Service
             _accountRepository = accountRepository;
         }
 
-        public Account ChangeIsBlockedByEmail(string email)
+        public BaseResponse<Account> ChangeIsBlockedByEmail(string email)
         {
+            BaseResponse<Account> response = new BaseResponse<Account>();
             var account = _accountRepository.FindByEmail(email);
-            if(account is null)
-                throw new Exception("Girilen e-posta adresine kayıtlı kullanıcı bulunamadı.");
+            if (account is null)
+            {
+                response.ResponseStatusCodes = ResponseStatusCodes.AccountNotFound;
+                return response;
+            }
             account.IsBlocked = !account.IsBlocked;
             _accountRepository.Update(account);
-            return account;
+            response.ResponseStatusCodes = ResponseStatusCodes.Success;
+            response.Data = account;
+            return response;
         }
 
-        public Account ChangeVisibilityByEmail(string email)
+        public BaseResponse<Account> ChangeVisibilityByEmail(string email)
         {
+            BaseResponse<Account> response = new BaseResponse<Account>();
             var account = _accountRepository.FindByEmail(email);
-            if(account is null)
-                throw new Exception("Girilen e-posta adresine kayıtlı kullanıcı bulunamadı.");
+            if (account is null)
+            {
+                response.ResponseStatusCodes = ResponseStatusCodes.AccountNotFound;
+                return response;
+            }
             account.IsVisible = !account.IsVisible;
             _accountRepository.Update(account);
-            return account;
+            response.ResponseStatusCodes = ResponseStatusCodes.Success;
+            response.Data = account;
+            return response;
         }
 
-        public void Create(Account account)
+        public BaseResponse<Account> Create(Account account)
         {
+            BaseResponse<Account> response = new BaseResponse<Account>();
             var createdAccount = _accountRepository.FindByIdAndEmail(account.Id,account.Email);
-            if(createdAccount is not null)
-                throw new Exception("Böyle bir kullanıcı zaten var");
+            if (createdAccount is not null)
+            {
+                response.ResponseStatusCodes = ResponseStatusCodes.AccountFound;
+                return response;
+            }
             _accountRepository.Create(account);
+            response.ResponseStatusCodes = ResponseStatusCodes.Success;
+            response.Data = account;
+            return response;
         }
 
-        public void DeleteByEmail(string email)
+        public BaseResponse<string> DeleteByEmail(string email)
         {
+            BaseResponse<string> response = new BaseResponse<string>();
             var deletedAccount = _accountRepository.FindByEmail(email);
-            if(deletedAccount is null)
-                throw new Exception("Bu e-posta adresine kayıtlı kullanıcı bulunamadı.");
+            if (deletedAccount is null)
+            {
+                response.ResponseStatusCodes = ResponseStatusCodes.AccountNotFound;
+                return response;
+            }
             _accountRepository.Delete(deletedAccount);
+            response.ResponseStatusCodes = ResponseStatusCodes.Success;
+            return response;
         }
 
-        public List<Account> GetAll()
+        public BaseResponse<List<Account>> GetAll()
         {
-            return _accountRepository.GetAll();
+            BaseResponse<List<Account>> response = new BaseResponse<List<Account>>();
+            try
+            {
+                response.Data = _accountRepository.GetAll();
+                response.ResponseStatusCodes = ResponseStatusCodes.Success;
+                return response;
+            }
+            catch (Exception e)
+            {
+                response.Data = null;
+                response.ResponseStatusCodes = ResponseStatusCodes.AccountNotFound;
+                return response;
+            }
         }
 
-        public Account GetByEmail(string email)
+        public BaseResponse<Account> GetByEmail(string email)
         {
-            return _accountRepository.FindByEmail(email);
+            BaseResponse<Account> response = new BaseResponse<Account>();
+            try
+            {
+                response.Data = _accountRepository.FindByEmail(email);
+                response.ResponseStatusCodes = ResponseStatusCodes.Success;
+                return response;
+            }
+            catch (Exception e)
+            {
+                response.Data = null;
+                response.ResponseStatusCodes = ResponseStatusCodes.AccountNotFound;
+                return response;
+            }
         }
 
-        public Account GetById(int id)
+        public BaseResponse<Account> GetById(int id)
         {
-            return _accountRepository.FindById(id);
+            BaseResponse<Account> response = new BaseResponse<Account>();
+            try
+            {
+                response.Data = _accountRepository.FindById(id);
+                response.ResponseStatusCodes = ResponseStatusCodes.Success;
+                return response;
+            }
+            catch (Exception e)
+            {
+                response.Data = null;
+                response.ResponseStatusCodes = ResponseStatusCodes.AccountNotFound;
+                return response;
+            }
         }
 
-        public Account Update(Account account)
+        public BaseResponse<Account> Update(Account account)
         {
+            BaseResponse<Account> response = new BaseResponse<Account>();
             var updatedAccount = _accountRepository.FindByEmail(account.Email);
-            if(updatedAccount is null)
-                throw new Exception("Bu e-posta adresine kayıtlı kullanıcı bulunamadı.");
+            if (updatedAccount is null)
+            {
+                response.ResponseStatusCodes = ResponseStatusCodes.AccountNotFound;
+                return response;
+            }
             _accountRepository.Update(account);
-            return account;
+            response.ResponseStatusCodes = ResponseStatusCodes.Success;
+            response.Data = updatedAccount;
+            return response;
         }
 
-        public Account UpdateEmail(string oldEmail, string newEmail)
+        public BaseResponse<Account> UpdateEmail(string oldEmail, string newEmail)
         {
+            BaseResponse<Account> response = new BaseResponse<Account>();
             var updatedAccount = _accountRepository.FindByEmail(oldEmail);
-            if(updatedAccount is null)
-                throw new Exception("Bu e-posta adresine kayıtlı kullanıcı bulunamadı.");
+            if (updatedAccount is null)
+            {
+                response.ResponseStatusCodes = ResponseStatusCodes.AccountNotFound;
+                return response;
+            }
             updatedAccount.Email=newEmail;
             _accountRepository.Update(updatedAccount);
-            return updatedAccount;
+            response.ResponseStatusCodes = ResponseStatusCodes.Success;
+            response.Data = updatedAccount;
+            return response;
         }
 
-        public Account UpdatePasswordByEmail(string email, string newPassword)
+        public BaseResponse<Account> UpdatePasswordByEmail(string email, string newPassword)
         {
+            BaseResponse<Account> response = new BaseResponse<Account>();
             var updatedAccount = _accountRepository.FindByEmail(email);
-            if(updatedAccount is null)
-                throw new Exception("Bu e-posta adresine kayıtlı kullanıcı bulunamadı.");
+            if (updatedAccount is null)
+            {
+                response.ResponseStatusCodes = ResponseStatusCodes.AccountNotFound;
+                return response;
+            }
             updatedAccount.Password=newPassword;
             _accountRepository.Update(updatedAccount);
-            return updatedAccount;
+            response.ResponseStatusCodes = ResponseStatusCodes.Success;
+            response.Data = updatedAccount;
+            return response;
         }
     }
 }

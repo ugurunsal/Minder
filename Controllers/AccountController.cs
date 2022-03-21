@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Minder.DTO;
+using Minder.Helper;
 using Minder.Interface;
 using Minder.Model;
 
@@ -8,70 +9,71 @@ using Minder.Model;
 public class AccountController : ControllerBase
 {
     private readonly IAccountService _accountService;
+    private readonly ResponseGeneratorHelper ResponseGeneratorHelper;
 
-    public AccountController(IAccountService accountService)
+    public AccountController(IAccountService accountService, ResponseGeneratorHelper _ResponseGeneratorHelper)
     {
         _accountService = accountService;
+        ResponseGeneratorHelper = _ResponseGeneratorHelper;
     }
 
     [HttpPost("create")]
-    public void Create(Account account)
+    public ActionResult<BaseResponse<Account>> Create(Account account)
     {
-        _accountService.Create(account);
+        return ResponseGeneratorHelper.ResponseGenerator(_accountService.Create(account));
     }
 
     [HttpPost("update")]
-    public Account Update(Account account)
+    public ActionResult<BaseResponse<Account>> Update(Account account)
     {
-        _accountService.Update(account);
-        return account;
+        return ResponseGeneratorHelper.ResponseGenerator(_accountService.Update(account));
     }
 
     [HttpPost("updateemail")]
-    public Account UpdateEmail(string oldEmail, string newEmail)
+    public ActionResult<BaseResponse<Account>> UpdateEmail(string oldEmail, string newEmail)
     {
-        return _accountService.UpdateEmail(oldEmail,newEmail);
+        return ResponseGeneratorHelper.ResponseGenerator(_accountService.UpdateEmail(oldEmail,newEmail));
     }
 
     [HttpPost("updatepassword")]
-    public Account UpdatePasswordByEmail(string email, string newPassword)
+    public ActionResult<BaseResponse<Account>> UpdatePasswordByEmail(string email, string newPassword)
     {
-        return _accountService.UpdatePasswordByEmail(email,newPassword);
+        return ResponseGeneratorHelper.ResponseGenerator(_accountService.UpdatePasswordByEmail(email,newPassword));
     }
 
     [HttpPost("changeisblocked")]
-    public Account ChangeIsBlockedByEmail(string email)
+    public ActionResult<BaseResponse<Account>> ChangeIsBlockedByEmail(string email)
     {
-        return _accountService.ChangeIsBlockedByEmail(email);
+        return ResponseGeneratorHelper.ResponseGenerator(_accountService.ChangeIsBlockedByEmail(email));
     }
 
     [HttpPost("changevisibility")]
-    public Account ChangeVisibilityByEmail(string email)
+    public ActionResult<BaseResponse<Account>> ChangeVisibilityByEmail(string email)
     {
-        return _accountService.ChangeVisibilityByEmail(email);
+        return ResponseGeneratorHelper.ResponseGenerator(_accountService.ChangeVisibilityByEmail(email));
     }
 
     [HttpPost("delete")]
-    public void DeleteByEmail(string email)
+    public ActionResult<BaseResponse<string>> DeleteByEmail(string email)
     {
-        _accountService.DeleteByEmail(email);
+        return ResponseGeneratorHelper.ResponseGenerator(_accountService.DeleteByEmail(email));
     }
 
     [HttpGet("getall")]
-    public List<Account> GetAll()
+    public ActionResult<BaseResponse<List<Account>>> GetAll()
     {
-        return _accountService.GetAll();
+        return ResponseGeneratorHelper.ResponseGenerator(_accountService.GetAll());
     }
 
     [HttpGet("getbyemail")]
-    public Account GetByEmail(string email)
+    public ActionResult<BaseResponse<Account>> GetByEmail(string email)
     {
-        return _accountService.GetByEmail(email);
+        return ResponseGeneratorHelper.ResponseGenerator(_accountService.GetByEmail(email));
     }
 
     [HttpGet("getbyid")]
-    public Account GetById(int id)
+    public ActionResult<BaseResponse<Account>> GetById(int id)
     {
-        return _accountService.GetById(id);
+        return ResponseGeneratorHelper.ResponseGenerator(_accountService.GetById(id));
     }
 }

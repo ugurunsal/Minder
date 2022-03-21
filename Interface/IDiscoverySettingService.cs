@@ -1,12 +1,13 @@
+using Minder.DTO;
 using Minder.Model;
 
 namespace Minder.Interface
 {
     public interface IDiscoverySettingService
     {
-        void Create(DiscoverySetting discoverySetting);
-        DiscoverySetting Update(DiscoverySetting discoverySetting);
-        void Delete(DiscoverySetting discoverySetting);
-        DiscoverySetting FindByUserId(int userId);
+        BaseResponse<DiscoverySetting> Create(DiscoverySetting discoverySetting);
+        BaseResponse<DiscoverySetting> Update(DiscoverySetting discoverySetting);
+        BaseResponse<string> Delete(DiscoverySetting discoverySetting);
+        BaseResponse<DiscoverySetting> FindByUserId(int userId);
     }
 }

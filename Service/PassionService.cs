@@ -1,3 +1,5 @@
+using Minder.DTO;
+using Minder.Enum;
 using Minder.Interface;
 using Minder.Model;
 
@@ -12,39 +14,82 @@ namespace Minder.Service
             _passionRepository = passionRepository;
         }
 
-        public void Create(Passion passion)
+        public BaseResponse<Passion> Create(Passion passion)
         {
+            BaseResponse<Passion> response = new BaseResponse<Passion>();
             Passion createdPassion = _passionRepository.GetByName(passion.Name);
-            if(createdPassion is not null)
-                throw new Exception("Bu isimde mevcut bir veri zaten var");
+            if (createdPassion is not null)
+            {
+                response.ResponseStatusCodes = ResponseStatusCodes.ExistData;
+                return response;
+            }
             _passionRepository.Create(passion);
+            response.ResponseStatusCodes = ResponseStatusCodes.Success;
+            response.Data = passion;
+            return response;
         }
 
-        public void Delete(Passion passion)
+        public BaseResponse<string> Delete(Passion passion)
         {
-            Passion createdPassion = _passionRepository.GetByName(passion.Name);
-            if(createdPassion is null)
-                throw new Exception("Bu isimde bir veri bulunamadı");
-            _passionRepository.Delete(passion);
+            BaseResponse<string> response = new BaseResponse<string>();
+            Passion deletedPassion = _passionRepository.GetByName(passion.Name);
+            if (deletedPassion is null)
+            {
+                response.ResponseStatusCodes = ResponseStatusCodes.DataNotFound;
+                return response;
+            }
+            _passionRepository.Delete(deletedPassion);
+            response.ResponseStatusCodes = ResponseStatusCodes.Success;
+            return response;
         }
 
-        public List<Passion> GetAll()
+        public BaseResponse<List<Passion>> GetAll()
         {
-            return _passionRepository.GetAll();
+            BaseResponse<List<Passion>> response = new BaseResponse<List<Passion>>();
+            try
+            {
+                response.Data = _passionRepository.GetAll();
+                response.ResponseStatusCodes = ResponseStatusCodes.Success;
+                return response;
+            }
+            catch (Exception e)
+            {
+                response.Data = null;
+                response.ResponseStatusCodes = ResponseStatusCodes.DataNotFound;
+                return response;
+            }
         }
 
-        public Passion GetByName(string name)
+        public BaseResponse<Passion> GetByName(string name)
         {
-            return _passionRepository.GetByName(name);
+            BaseResponse<Passion> response = new BaseResponse<Passion>();
+            try
+            {
+                response.Data = _passionRepository.GetByName(name);
+                response.ResponseStatusCodes = ResponseStatusCodes.Success;
+                return response;
+            }
+            catch (Exception e)
+            {
+                response.Data = null;
+                response.ResponseStatusCodes = ResponseStatusCodes.DataNotFound;
+                return response;
+            }
         }
-        
-        public Passion Update(Passion passion)
+
+        public BaseResponse<Passion> Update(Passion passion)
         {
-            Passion createdPassion = _passionRepository.GetByName(passion.Name);
-            if(createdPassion is null)
-                throw new Exception("Bu isimde bir veri bulunamadı");
-            _passionRepository.Update(passion);
-            return passion;
+            BaseResponse<Passion> response = new BaseResponse<Passion>();
+            Passion updatedPassion = _passionRepository.GetByName(passion.Name);
+            if (updatedPassion is null)
+            {
+                response.ResponseStatusCodes = ResponseStatusCodes.DataNotFound;
+                return response;
+            }
+            _passionRepository.Delete(updatedPassion);
+            response.Data = passion;
+            response.ResponseStatusCodes = ResponseStatusCodes.Success;
+            return response;
         }
     }
 }
